@@ -5,7 +5,7 @@
 
 namespace A2D {
 
-double fabs(std::complex<double> a) {
+double fabs_a2d(std::complex<double> a) {
   if (a.real() >= 0.0) {
     return a.real();
   } else {
@@ -13,7 +13,7 @@ double fabs(std::complex<double> a) {
   }
 }
 
-double fabs(double a) {
+double fabs_a2d(double a) {
   if (a >= 0.0) {
     return a;
   } else {
@@ -215,7 +215,7 @@ int blockInverse(AType& A, AinvType& Ainv, IType& ipiv) {
     T maxv = A(k, k);
     for (int j = k + 1; j < N; j++) {
       T t = A(j, k);
-      if (fabs(t) > fabs(maxv)) {
+      if (fabs_a2d(t) > fabs_a2d(maxv)) {
         maxv = t;
         r = j;
       }
@@ -232,7 +232,7 @@ int blockInverse(AType& A, AinvType& Ainv, IType& ipiv) {
       }
     }
 
-    if (fabs(A(k, k)) == 0.0) {
+    if (fabs_a2d(A(k, k)) == 0.0) {
       fail = k + 1;
       return fail;
     }

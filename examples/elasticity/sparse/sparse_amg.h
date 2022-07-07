@@ -178,7 +178,7 @@ BSRMat<I, T, M, N>* BSRMatMakeTentativeProlongation(
         }
       }
       init_norm = std::sqrt(init_norm);
-      double theta = fabs(init_norm);
+      double theta = fabs_a2d(init_norm);
 
       // Take the dot product between rows k and j
       for (I j = 0; j < k; j++) {
@@ -212,7 +212,7 @@ BSRMat<I, T, M, N>* BSRMatMakeTentativeProlongation(
       // Compute the scalar factor for this row - zero rows
       // that are nearly linearly dependent
       T scale = 0.0;
-      if (fabs(norm) > toler * theta) {
+      if (fabs_a2d(norm) > toler * theta) {
         scale = 1.0 / norm;
         R(i, k, k) = norm;
       } else {
@@ -365,7 +365,7 @@ void BSRMatSmoothedAmgLevel(T omega, T epsilon, BSRMat<I, T, M, M>& A,
   std::vector<I> aggr(A.nbcols);
   std::vector<I> cpts(A.nbcols);
 
-  if (fabs(epsilon) != 0.0) {
+  if (fabs_a2d(epsilon) != 0.0) {
     // Compute the strength of connection S - need to fix this
     std::vector<I> Srowp(A.nbrows + 1);
     std::vector<I> Scols(A.nnz);
@@ -498,7 +498,8 @@ class BSRMatAmg {
                   << "]: " << std::setw(15) << res_norm << std::endl;
       }
 
-      if (fabs(res_norm) < atol || fabs(res_norm) < rtol * fabs(init_norm)) {
+      if (fabs_a2d(res_norm) < atol ||
+          fabs_a2d(res_norm) < rtol * fabs_a2d(init_norm)) {
         if (monitor && !((iter + 1) % monitor == 0)) {
           std::cout << "MG |A * x - b|[" << std::setw(3) << iter + 1
                     << "]: " << std::setw(15) << res_norm << std::endl;
@@ -543,7 +544,7 @@ class BSRMatAmg {
                   << "]: " << std::setw(15) << init_norm << std::endl;
       }
 
-      if (fabs(init_norm) > atol) {
+      if (fabs_a2d(init_norm) > atol) {
         // Apply the preconditioner Z = M^{-1} R
         applyFactor(R, Z);
 
@@ -566,8 +567,8 @@ class BSRMatAmg {
                       << "]: " << std::setw(15) << res_norm << std::endl;
           }
 
-          if (fabs(res_norm) < atol ||
-              fabs(res_norm) < rtol * fabs(init_norm)) {
+          if (fabs_a2d(res_norm) < atol ||
+              fabs_a2d(res_norm) < rtol * fabs_a2d(init_norm)) {
             if (monitor && !((iter + 1) % monitor == 0)) {
               std::cout << "PCG |A * x - b|[" << std::setw(3) << iter + 1
                         << "]: " << std::setw(15) << res_norm << std::endl;
