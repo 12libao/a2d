@@ -5,25 +5,36 @@ project(A2D)
 set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_FLAGS "-g -O3")
 
-add_subdirectory(a2d)
-add_subdirectory(sparse)
+# add_subdirectory(a2d)
+# add_subdirectory(sparse)
 
 find_package(MPI REQUIRED)
 find_package(OpenMP REQUIRED)
 find_package(KokkosKernels REQUIRED)
 
 add_executable(atestflyer atestflyer.cpp)
-target_link_libraries(atestflyer PUBLIC Kokkos::kokkoskernels)
-
-add_executable(elasticity elasticity.cpp)
-target_include_directories(elasticity PUBLIC a2d sparse)
-target_link_libraries(elasticity 
+target_link_libraries(atestflyer     
     PUBLIC
-        a2dlib
-        sparselib
-        Kokkos::kokkoskernels 
-        OpenMP::OpenMP_CXX 
-        MPI::MPI_CXX)
+        Kokkos::kokkoskernels)
+
+# target_include_directories(atestflyer PUBLIC a2d sparse)
+# target_link_libraries(atestflyer     
+#     PUBLIC
+#         a2dlib
+#         sparselib
+#         Kokkos::kokkoskernels 
+#         OpenMP::OpenMP_CXX 
+#         MPI::MPI_CXX)
+
+# add_executable(elasticity elasticity.cpp)
+# target_include_directories(elasticity PUBLIC a2d sparse)
+# target_link_libraries(elasticity 
+#     PUBLIC
+#         a2dlib
+#         sparselib
+#         Kokkos::kokkoskernels 
+#         OpenMP::OpenMP_CXX 
+#         MPI::MPI_CXX)
 
 # add_executable(sparse_numerical sparse_numerical.cpp)
 # target_link_libraries(sparse_numerical Kokkos::kokkos)
