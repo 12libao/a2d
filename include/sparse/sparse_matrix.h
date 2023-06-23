@@ -173,7 +173,20 @@ class BSRMat {
           for (index_t jj = 0; jj < N; jj++) {
             // (irow, jcol) is the entry coo
             const index_t jcol = N * j + jj + 1;  // convert to 1-based index
-            std::fprintf(fp, "%d %d %30.20e\n", irow, jcol, Avals(jp, ii, jj));
+            std::string printfCmd = "%d %d ";
+            if (typeid(double) == typeid(Avals(jp, ii, jj))) {
+              printfCmd += "%30.20e\n";
+            } else if (typeid(float) == typeid(Avals(jp, ii, jj))) {
+              printfCmd += "%15.10e\n";
+            } else if (typeid(std::complex<double>) ==
+                       typeid(Avals(jp, ii, jj))) {
+              printfCmd += "%30.20e + %30.20ei\n";
+            } else {
+              printfCmd = "Invalid type\n";
+            }
+            std::fprintf(fp, printfCmd.c_str(), irow, jcol,
+                         std::real(Avals(jp, ii, jj)),
+                         std::imag(Avals(jp, ii, jj)));
           }
         }
       }
