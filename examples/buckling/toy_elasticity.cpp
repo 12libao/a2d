@@ -1,3 +1,4 @@
+#include "toolkit.h"
 #include "topology_elasticity.h"
 #include "utils/a2dmesh.h"
 #include "utils/a2dprofiler.h"
