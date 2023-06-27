@@ -1,10 +1,25 @@
 #include <iomanip>
 #include <iostream>
 
+#include "QuadLinearElastic.h"
 #include "a2dtmp3d.h"
 #include "a2dtypes.h"
 #include "block_numeric.h"
 #include "sparse/sparse_matrix.h"
+
+// define a function to print the A2D::Mat
+template <typename T, int M, int N>
+void printADMat(const char* name, const A2D::Mat<T, M, N>& A) {
+  printf("Matrix: \033[32m%s\033[0m\n", name);
+  for (int i = 0; i < M; i++) {
+    std::cout << "|";
+    for (int j = 0; j < N; j++) {
+      std::cout << std::setw(15) << A(i, j) << " ";
+    }
+    std::cout << "|" << std::endl;
+  }
+  std::cout << std::endl;
+}
 
 template <typename T>
 void reisdual(T mu, T lambda, T wdetJ, A2D::Mat<T, 3, 3>& Jinv0,
@@ -17,7 +32,22 @@ void reisdual(T mu, T lambda, T wdetJ, A2D::Mat<T, 3, 3>& Jinv0,
   A2D::ADMat<A2D::SymmMat<T, 3>> E(E0, Eb);
   A2D::ADScalar<T> output;
 
+  printADMat("Uxi.value", Uxi.value());
+  printADMat("Uxi.bvalue", Uxi.bvalue());
+  printADMat("Ux.value", Ux.value());
+  printADMat("Ux.bvalue", Ux.bvalue());
+
   auto mult = A2D::MatMatMult(Uxi, Jinv0, Ux);
+
+  printADMat("Uxi.value", Uxi.value());
+  printADMat("Uxi.bvalue", Uxi.bvalue());
+
+  printADMat("Ux.value", Ux.value());
+  printADMat("Ux.bvalue", Ux.bvalue());
+
+  // printMat("Ux.value", Ux.value());
+  // printMat("Ux.bvalue", Ux.bvalue());
+
   auto strain = A2D::MatLinearGreenStrain(Ux, E);
   auto energy = A2D::SymmIsotropicEnergy(mu, lambda, E, output);
 
@@ -68,6 +98,8 @@ void adjoint_product(T mu0, T lambda0, T wdetJ, A2D::Mat<T, 3, 3>& Jinv0,
   dlambda = lambda.hvalue[0];
 }
 
+
+
 int main(int argc, char* argv[]) {
   typedef std::complex<double> T;
   const int N = 10;
@@ -107,6 +139,10 @@ int main(int argc, char* argv[]) {
       Pxi(ii, jj) = -1.0 + 2.0 * std::rand() / RAND_MAX;
     }
   }
+
+  printADMat("Jinv", Jinv);
+  printADMat("Uxi", Uxi);
+  printADMat("Pxi", Pxi);
 
   adjoint_product(mu, lambda, wdetJ, Jinv, Uxi, Pxi, dmu, dlambda);
 
